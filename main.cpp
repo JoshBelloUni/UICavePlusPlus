@@ -19,7 +19,7 @@ using namespace std;
 
 int main(int argc, char** argv) {
 
-    int width = 8, height = 8; // provided code only works for these values(!)
+    int width, height; // provided code only works for these values(!)
 
     if (argc == 3) {
         width  = stoi (argv[1]);
