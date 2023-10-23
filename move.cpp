@@ -4,18 +4,22 @@ void Move::fire(Cave& c, string userCommand)
 {
     string s = tail(userCommand);
 
-    int newTomX = c.getTom()->getX(),  newTomY = c.getTom()->getY();
+    int newTomX = c.getTom()->getX();
+    int newTomY = c.getTom()->getY();
 
-    if (s[0] == 'w')
-        newTomX--;
-    else if  (s[0] == 'n')
+    if (s[0] == 'w') // Move up
         newTomY--;
+    else if (s[0] == 's') // Move down
+        newTomY++;
+    else if (s[0] == 'a') // Move left
+        newTomX--;
+    else if (s[0] == 'd') // Move right
+        newTomX++;
     else
     {
         cerr << "tom can't \"" << s << "\"" << endl;
         return;
     }
-
 
     if (newTomX < 0 || newTomY < 0 || newTomX >= c.getHeight() ||newTomY >= c.getHeight())
     {
