@@ -21,6 +21,8 @@ public:
     Tom *getTom() {return tom;}
     int getWidth() {return width;}
     int getHeight() {return height;}
+    Cave(const Cave& other);
+    Cave& operator=(const Cave& other);
 private:
     int width, height;
     Tom *tom;

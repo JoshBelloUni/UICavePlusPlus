@@ -7,13 +7,13 @@ void Move::fire(Cave& c, string userCommand)
     int newTomX = c.getTom()->getX();
     int newTomY = c.getTom()->getY();
 
-    if (s[0] == 'w') // Move up
+    if (s.compare("north") == 0) // Move up
         newTomY--;
-    else if (s[0] == 's') // Move down
+    else if (s.compare("south") == 0) // Move down
         newTomY++;
-    else if (s[0] == 'a') // Move left
+    else if (s.compare("west") == 0) // Move left
         newTomX--;
-    else if (s[0] == 'd') // Move right
+    else if (s.compare("east") == 0) // Move right
         newTomX++;
     else
     {

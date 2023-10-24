@@ -2,7 +2,6 @@
 #include <string>
 #include <iostream>
 #include <vector>
-#include <string>
 
 #include "cave.h"
 #include "rock.h"
@@ -10,6 +9,7 @@
 #include "location.h"
 #include "move.h"
 #include "place.h"
+#include "throw.h"
 
 using namespace std;
 
@@ -46,10 +46,22 @@ Cave::Cave(int w, int h) : width(w), height(h) // width and height of the cave
     tom -> setLocation( this, width/2,height/2);
 }
 
+
 Cave::~Cave()
 {
-    delete (map[0][0]); // fixme: I don't think this deletes all Locations and arrays declared in the constructor...
-    delete[] map; // fixme: ...neither does this.
+    // delete the allocated memory for Location objects and arrays
+    for (int x = 0; x < width; x++)
+    {
+        for (int y = 0; y < height; y++)
+        {
+            delete map[x][y];
+        }
+        delete[] map[x];
+    }
+    delete[] map;
+
+    // delete the Tom object
+    delete tom;
 }
 
 void Cave::command (string userCommand)
@@ -58,6 +70,8 @@ void Cave::command (string userCommand)
         Move().fire(*this, userCommand);
     else if (Place().triggersOn(userCommand))
         Place().fire(*this, userCommand);
+    else if (Throw().triggersOn(userCommand))
+        Throw().fire(*this, userCommand);
     else
         cerr << "tom doesn't know how to "+userCommand << endl;;
 }
@@ -80,5 +94,61 @@ void Cave::show()
 
     cout << endl;
 }
+
+
+Cave::Cave(const Cave& other) {
+
+    width = other.width;
+    height = other.height;
+
+    map = new Location**[width];
+    for (int x = 0; x < width; x++) {
+        Location** column = new Location*[height];
+        map[x] = column;
+        for (int y = 0; y < height; y++) {
+            // Deep copy the Location objects
+            map[x][y] = new Location(*(other.map[x][y]));
+        }
+    }
+
+    tom = new Tom(*(other.tom));
+}
+
+Cave& Cave::operator=(const Cave& other) {
+    if (this == &other) {
+        return *this;
+    }
+
+    // Clean up the current object
+    for (int x = 0; x < width; x++) {
+        for (int y = 0; y < height; y++) {
+            delete map[x][y];
+        }
+        delete[] map[x];
+    }
+    delete[] map;
+    delete tom;
+
+    // copy the new object
+    width = other.width;
+    height = other.height;
+
+    // allocate memory for the map
+    map = new Location**[width];
+    for (int x = 0; x < width; x++) {
+        Location** column = new Location*[height];
+        map[x] = column;
+        for (int y = 0; y < height; y++) {
+            // Deep copy the Location objects
+            map[x][y] = new Location(*(other.map[x][y]));
+        }
+    }
+
+    // deep copy any other dynamically allocated members like 'tom'
+    tom = new Tom(*(other.tom));
+
+    return *this;
+}
+
 
 
